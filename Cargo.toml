@@ -1,0 +1,15 @@
+[package]
+name = "douglas"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "douglas"
+path = "src/lib.rs"
+
+[[bin]]
+name = "douglas-example"
+path = "src/bin/main.rs"
+
+[dependencies]
+crossterm = "0.21.0"

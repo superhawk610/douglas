@@ -19,10 +19,6 @@ mod tests {
         impl Program for App {
             type Message = ();
 
-            fn new() -> Self {
-                App
-            }
-
             fn init(&mut self) -> Command<Self::Message> {
                 Command::exit()
             }
@@ -33,7 +29,7 @@ mod tests {
         }
 
         let mut config = Config::buffered();
-        App::run(&mut config).unwrap();
+        App.run(&mut config).unwrap();
         assert_eq!(config.renderer.output(), "hello, world!\n");
     }
 }

@@ -1,8 +1,8 @@
-use douglas::{Command, Config, Program, Renderer};
+use douglas::{Command, Config, Program};
 
 fn main() {
     let mut config = Config::default();
-    App::run(&mut config).unwrap();
+    App.run(&mut config).unwrap();
 }
 
 struct App;
@@ -10,11 +10,7 @@ struct App;
 impl Program for App {
     type Message = ();
 
-    fn new() -> Self {
-        App
-    }
-
-    fn on_event(&mut self, ev: crossterm::event::Event) -> Command<Self::Message> {
+    fn on_event(&mut self, _ev: crossterm::event::Event) -> Command<Self::Message> {
         Command::exit()
     }
 

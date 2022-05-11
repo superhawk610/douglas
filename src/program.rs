@@ -1,5 +1,4 @@
 use crossterm::event::{self, Event as TermEvent};
-use crossterm::terminal;
 use std::io;
 use std::sync::mpsc;
 use std::thread;
@@ -17,8 +16,6 @@ pub enum Event<T> {
 pub trait Program: Sized {
     type Message: Send + 'static;
 
-    fn new() -> Self;
-
     fn init(&mut self) -> Command<Self::Message> {
         Command::none()
     }
@@ -33,7 +30,7 @@ pub trait Program: Sized {
 
     fn view(&self) -> String;
 
-    fn run(config: &mut Config) -> io::Result<()> {
+    fn run(mut self, config: &mut Config) -> io::Result<()> {
         let (tx, rx) = mpsc::channel::<Event<Self::Message>>();
         let (done_tx, done_rx) = mpsc::channel();
 
@@ -55,21 +52,20 @@ pub trait Program: Sized {
         config.renderer.init();
 
         // if an initial command is provided, run it
-        let mut app = Self::new();
-        let init_cmd = Self::init(&mut app);
+        let init_cmd = self.init();
         run_command(&tx, init_cmd);
 
         while let Ok(message) = rx.recv() {
             // update the view
-            config.renderer.render(app.view()).unwrap();
+            config.renderer.render(self.view()).unwrap();
 
             // handle the event/message
             match message {
                 Event::Exit => {
                     break;
                 }
-                Event::Term(ev) => run_command(&tx, app.on_event(ev)),
-                Event::User(msg) => run_command(&tx, app.update(msg)),
+                Event::Term(ev) => run_command(&tx, self.on_event(ev)),
+                Event::User(msg) => run_command(&tx, self.update(msg)),
             }
         }
 

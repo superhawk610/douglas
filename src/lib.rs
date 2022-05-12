@@ -23,6 +23,16 @@ mod tests {
                 Command::exit()
             }
 
+            fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
+                // make sure all commands compile
+                Command::batch(vec![
+                    Command::none(),
+                    Command::send(()),
+                    Command::sync(|| {}),
+                    Command::exit(),
+                ])
+            }
+
             fn view(&self) -> String {
                 "hello, world!\n".into()
             }

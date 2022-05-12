@@ -1,18 +1,20 @@
-pub enum Command<T> {
+pub enum Command<Message> {
     Exit,
     None,
-    Single(Action<T>),
-    Batch(Vec<Action<T>>),
+    Single(Action<Message>),
+    Batch(Vec<Action<Message>>),
 }
 
-pub enum Action<T> {
-    Sync(Box<dyn Fn() -> T>),
+pub enum Action<Message> {
+    Send(Message),
+    Sync(Box<dyn Fn() -> Message>),
     // TODO: async w/ future?
 }
 
 impl<T> Action<T> {
     pub fn run(self) -> T {
         match self {
+            Action::Send(msg) => msg,
             Action::Sync(fun) => fun(),
         }
     }
@@ -27,10 +29,11 @@ impl<T> Command<T> {
         Command::None
     }
 
-    pub fn single<F>(fun: F) -> Self
-    where
-        F: Fn() -> T + 'static,
-    {
+    pub fn send(message: T) -> Self {
+        Command::Single(Action::Send(message))
+    }
+
+    pub fn sync(fun: impl Fn() -> T + 'static) -> Self {
         Command::Single(Action::Sync(Box::new(fun)))
     }
 

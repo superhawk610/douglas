@@ -63,7 +63,7 @@ impl Program for App {
 
     fn init(&mut self) -> Command<Self::Message> {
         // send an Increment message right away
-        Command::single(Message::Increment)
+        Command::send(Message::Increment)
     }
 
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
@@ -77,7 +77,7 @@ impl Program for App {
     }
 
     fn view(&self) -> String {
-        format!("count: {}", self.counter)
+        format!("count: {}\n", self.counter)
     }
 }
 

@@ -1,7 +1,11 @@
 [package]
 name = "douglas"
+description = "A tiny TUI framework built on the Elm architecture"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/superhawk610/douglas"
 
 [lib]
 name = "douglas"

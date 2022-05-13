@@ -47,10 +47,10 @@ impl Program for App {
     fn view(&self) -> String {
         format!(
             "count: {}\n\
-            [r]: reset\n\
-            [↑]: increment\n\
-            [↓]: decrement\n\
-            [q]: quit\n",
+            [r] reset\n\
+            [↑] increment\n\
+            [↓] decrement\n\
+            [q] quit\n",
             self.count
         )
     }

@@ -19,6 +19,7 @@ path = "src/lib.rs"
 [dependencies]
 crossterm = "0.21.0"
 crossbeam-channel = "0.5.1"
+parking_lot = "0.11.1"
 
 [workspace]
 members = [

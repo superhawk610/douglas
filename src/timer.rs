@@ -33,7 +33,7 @@ impl<T: Clone + Send + 'static> Timer<T> {
 
         let interval = self.interval;
         let message = self.message.clone();
-        let worker = WorkerThread::new(move |done| {
+        let worker = WorkerThread::spawn(move |done| {
             let ticker = tick(interval);
 
             loop {

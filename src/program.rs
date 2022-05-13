@@ -56,7 +56,7 @@ pub trait Program: Sized {
         // spin up key/mouse event listener
         let event_listener = {
             let tx = tx.clone();
-            WorkerThread::new(move |done| loop {
+            WorkerThread::spawn(move |done| loop {
                 if event::poll(Duration::from_millis(100)).unwrap() {
                     tx.send(Event::Term(event::read().unwrap())).unwrap();
                 }
@@ -78,7 +78,7 @@ pub trait Program: Sized {
 
         loop {
             // update the view
-            config.renderer.render(self.view()).unwrap();
+            config.renderer.render(self.view());
 
             // handle the event/message
             match rx.recv().unwrap() {

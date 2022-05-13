@@ -10,7 +10,7 @@ pub struct WorkerThread {
 
 impl WorkerThread {
     /// Spawn a worker closure in a new thread.
-    pub fn new<F>(fun: F) -> Self
+    pub fn spawn<F>(fun: F) -> Self
     where
         F: FnOnce(Receiver<()>) + Send + 'static,
     {

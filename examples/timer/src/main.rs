@@ -59,8 +59,8 @@ impl Program for App {
     fn view(&self) -> String {
         format!(
             "count: {}\n\
-            [r]: reset\n\
-            [q]: quit\n",
+            [r] reset\n\
+            [q] quit\n",
             self.count
         )
     }

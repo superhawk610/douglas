@@ -1,8 +1,8 @@
+use crossterm::event::Event;
 use douglas::{Command, Config, Program};
 
 fn main() {
-    let mut config = Config::default();
-    App.run(&mut config).unwrap();
+    App.run(&mut Config::default()).unwrap();
 }
 
 struct App;
@@ -10,7 +10,7 @@ struct App;
 impl Program for App {
     type Message = ();
 
-    fn on_event(&mut self, _ev: crossterm::event::Event) -> Command<Self::Message> {
+    fn on_event(&mut self, _: Event) -> Command<Self::Message> {
         Command::exit()
     }
 

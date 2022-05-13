@@ -36,7 +36,7 @@ Granted, this isn't very exciting. Douglas apps just need 3 ingredients:
 3. `view` render your UI (you've seen this already!)
 
 ```rust
-use douglas::{Command, Config, Program};
+use douglas::{Command, Config, Mailbox, Program};
 
 // declare your state model
 struct App {
@@ -61,7 +61,7 @@ enum Message {
 impl Program for App {
     type Message = Message;
 
-    fn init(&mut self) -> Command<Self::Message> {
+    fn init(&mut self, _: Mailbox<Self::Message>) -> Command<Self::Message> {
         // send an Increment message right away
         Command::send(Message::Increment)
     }
@@ -88,6 +88,22 @@ fn main() {
 }
 ```
 
+Finally, if you need to do any cleanup, you may implement `exit`:
+
+```rust
+use douglas::Program;
+
+impl Program for App {
+    // (...snip...)
+
+    fn exit(self) {
+        println!("Goodbye, cruel world!");
+    }
+}
+```
+
+## Handling Events
+
 In addition to `update`, apps may implement `on_event` to respond to terminal
 events such as keypresses:
 
@@ -109,6 +125,59 @@ impl Program for App {
         Command::none()
     }
 }
+```
+
+## External Interaction
+
+Sometimes it's useful to respond to events that occur outside of your program's
+lifecycle, like responding when data becomes available on the network or sending
+a message on a recurring interval. You can use your program's mailbox:
+
+```rust
+use douglas::{Command, Mailbox, Program, Timer};
+use crossterm::event::{Event, KeyCode, KeyEvent};
+use std::time::Duration;
+
+struct App {
+    timer: Timer,
+}
+
+#[derive(Clone)]
+enum Message {
+    Tick,
+}
+
+impl App {
+    fn new() -> Self {
+        Self {
+            timer: Timer::new(Duration::from_millis(1_000), Message::Tick),
+        }
+    }
+}
+
+impl Program for App {
+    // (...snip...)
+
+    fn init(&mut self, mailbox: Mailbox<Self::Message>) -> Command<Self::Message> {
+        self.timer.start(mailbox);
+
+        Command::none()
+    }
+
+    // make sure to clean up!
+    fn exit(mut self) {
+        self.timer.stop();
+    }
+}
+```
+
+## Examples
+
+You can check out the [`examples`](./examples) directory to see some projects in
+action. You can also run an example directly:
+
+```bash
+cargo run --package hello_world
 ```
 
 ## Contributing

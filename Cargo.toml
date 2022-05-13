@@ -11,9 +11,12 @@ repository = "https://github.com/superhawk610/douglas"
 name = "douglas"
 path = "src/lib.rs"
 
-[[bin]]
-name = "douglas-example"
-path = "src/bin/main.rs"
-
 [dependencies]
 crossterm = "0.21.0"
+crossbeam-channel = "0.5.1"
+
+[workspace]
+members = [
+  "examples/hello_world",
+  "examples/timer"
+]

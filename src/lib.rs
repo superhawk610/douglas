@@ -1,12 +1,17 @@
 mod command;
 mod config;
+mod mailbox;
 mod program;
 mod renderer;
+mod timer;
+mod worker_thread;
 
 pub use command::Command;
 pub use config::Config;
+pub use mailbox::Mailbox;
 pub use program::Program;
 pub use renderer::Renderer;
+pub use timer::Timer;
 
 #[cfg(test)]
 mod tests {
@@ -19,11 +24,11 @@ mod tests {
         impl Program for App {
             type Message = ();
 
-            fn init(&mut self) -> Command<Self::Message> {
+            fn init(&mut self, _: Mailbox<Self::Message>) -> Command<Self::Message> {
                 Command::exit()
             }
 
-            fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
+            fn update(&mut self, _: Self::Message) -> Command<Self::Message> {
                 // make sure all commands compile
                 Command::batch(vec![
                     Command::none(),

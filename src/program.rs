@@ -9,31 +9,47 @@ use crate::config::Config;
 use crate::mailbox::Mailbox;
 use crate::worker_thread::WorkerThread;
 
-pub enum Event<T> {
+pub(crate) enum Event<T> {
     Exit,
     User(T),
     Term(TermEvent),
 }
 
+/// A program describes a terminal application capable of generating
+/// and responding to messages, as well as rendering its UI to a string.
+///
+/// A douglas program consists of 3 main ingredients:
+///
+/// 1. `init` initialize your state model
+/// 2. `update` update your state model in response to messages
+/// 3. `view` render your program's UI
+///
+/// At minimum, you must implement `view`.
 pub trait Program: Sized {
     type Message: Send + 'static;
 
+    /// Initialize your program's state.
     fn init(&mut self, _mailbox: Mailbox<Self::Message>) -> Command<Self::Message> {
         Command::none()
     }
 
+    /// Perform any cleanup before your application exits.
     fn exit(self) {}
 
+    /// Respond to any terminal events (mouse, keyboard) by generating messages.
     fn on_event(_ev: TermEvent) -> Command<Self::Message> {
         Command::none()
     }
 
+    /// Update your program's state in response to messages.
     fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
         Command::none()
     }
 
+    /// Render your program's UI.
     fn view(&self) -> String;
 
+    /// Run your application.
     fn run(mut self, config: &mut Config) -> io::Result<()> {
         let (tx, rx) = unbounded::<Event<Self::Message>>();
 

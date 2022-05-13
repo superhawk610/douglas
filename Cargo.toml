@@ -1,11 +1,16 @@
 [package]
 name = "douglas"
 description = "A tiny TUI framework built on the Elm architecture"
+authors = ["Aaron Ross <superhawk610@gmail.com>"]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
+documentation = "https://docs.rs/douglas"
 repository = "https://github.com/superhawk610/douglas"
+homepage = "https://github.com/superhawk610/douglas"
+categories = ["command-line-interface", "gui", "rendering"]
+keywords = ["terminal", "ui", "tui", "elm"]
 
 [lib]
 name = "douglas"

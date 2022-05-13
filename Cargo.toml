@@ -17,6 +17,7 @@ crossbeam-channel = "0.5.1"
 
 [workspace]
 members = [
+  "examples/counter",
   "examples/hello_world",
   "examples/timer"
 ]

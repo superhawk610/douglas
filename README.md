@@ -104,8 +104,8 @@ impl Program for App {
 
 ## Handling Events
 
-In addition to `update`, apps may implement `on_event` to respond to terminal
-events such as keypresses:
+In addition to `update`, apps may implement `on_event` to send messages in
+response to terminal events such as keypresses:
 
 ```rust
 use douglas::{Command, Program};
@@ -114,15 +114,12 @@ use crossterm::event::{Event, KeyCode, KeyEvent};
 impl Program for App {
     // (...snip...)
 
-    fn on_event(&mut self, event: Event) -> Command<Self::Message> {
+    fn on_event(event: Event) -> Command<Self::Message> {
         match event {
-            Event::Key(KeyEvent { code: KeyCode::Up, .. }) => {
-                self.counter += 1;
-            }
-            _ => {}
+            Event::Key(KeyEvent { code: KeyCode::Up, .. }) =>
+                Command::send(Message::Increment),
+            _ => Command::none()
         }
-
-        Command::none()
     }
 }
 ```

@@ -1,5 +1,4 @@
-use crossterm::event::Event;
-use douglas::{Command, Config, Program};
+use douglas::{Command, Config, Mailbox, Program};
 
 fn main() {
     App.run(&mut Config::default()).unwrap();
@@ -10,7 +9,7 @@ struct App;
 impl Program for App {
     type Message = ();
 
-    fn on_event(&mut self, _: Event) -> Command<Self::Message> {
+    fn init(&mut self, _: Mailbox<Self::Message>) -> Command<Self::Message> {
         Command::exit()
     }
 

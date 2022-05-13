@@ -24,7 +24,7 @@ pub trait Program: Sized {
 
     fn exit(self) {}
 
-    fn on_event(&mut self, _ev: TermEvent) -> Command<Self::Message> {
+    fn on_event(_ev: TermEvent) -> Command<Self::Message> {
         Command::none()
     }
 
@@ -66,7 +66,7 @@ pub trait Program: Sized {
 
             // handle the event/message
             match rx.recv().unwrap() {
-                Event::Term(ev) => run_command(&tx, self.on_event(ev)),
+                Event::Term(ev) => run_command(&tx, <Self as Program>::on_event(ev)),
                 Event::User(msg) => run_command(&tx, self.update(msg)),
                 Event::Exit => {
                     break;

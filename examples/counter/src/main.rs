@@ -1,40 +1,30 @@
 use crossterm::event::{Event, KeyCode};
-use douglas::{Command, Config, Mailbox, Program, Timer};
-use std::time::Duration;
+use douglas::{Command, Config, Program};
 
 struct App {
-    count: usize,
-    timer: Timer<Message>,
+    count: isize,
 }
 
-#[derive(Clone)]
 enum Message {
-    Tick,
     Reset,
+    Increment,
+    Decrement,
 }
 
 impl App {
     fn new() -> Self {
-        Self {
-            count: 0,
-            timer: Timer::new(Duration::from_millis(1_000), Message::Tick),
-        }
+        Self { count: 0 }
     }
 }
 
 impl Program for App {
     type Message = Message;
 
-    fn init(&mut self, mailbox: Mailbox<Self::Message>) -> Command<Self::Message> {
-        self.timer.start(mailbox);
-
-        Command::none()
-    }
-
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
         match message {
-            Message::Tick => self.count += 1,
             Message::Reset => self.count = 0,
+            Message::Increment => self.count += 1,
+            Message::Decrement => self.count -= 1,
         }
 
         Command::none()
@@ -45,6 +35,8 @@ impl Program for App {
             match event.code {
                 KeyCode::Char('q') => Command::exit(),
                 KeyCode::Char('r') => Command::send(Message::Reset),
+                KeyCode::Up => Command::send(Message::Increment),
+                KeyCode::Down => Command::send(Message::Decrement),
                 _ => Command::none(),
             }
         } else {
@@ -52,14 +44,12 @@ impl Program for App {
         }
     }
 
-    fn exit(mut self) {
-        self.timer.stop();
-    }
-
     fn view(&self) -> String {
         format!(
             "count: {}\n\
             [r]: reset\n\
+            [↑]: increment\n\
+            [↓]: decrement\n\
             [q]: quit\n",
             self.count
         )
